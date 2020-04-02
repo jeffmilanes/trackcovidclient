@@ -32,7 +32,7 @@ function App() {
     });
     const [stateCount, setStateCount] = useState([]);
     const [statePerHealthFacility, setPerHealthFacility] = useState([]);
-    const [statePerLocation, setPerLocation] = useState([]);
+    //const [statePerLocation, setPerLocation] = useState([]);
     
 
     const getCount = async () => {
@@ -49,12 +49,12 @@ function App() {
         setPerHealthFacility(res.features)
     }
 
-    const getPerLocation = async () => {
-        let res = await fetch('http://localhost:5000/api/v2/local-cases')
-        res = await res.json()
+    // const getPerLocation = async () => {
+    //     let res = await fetch('http://localhost:5000/api/v2/local-cases')
+    //     res = await res.json()
 
-        setPerLocation(res)
-    }
+    //     setPerLocation(res)
+    // }
 
     const clickLocation = (lat, lon, index) => {
         setState({
@@ -68,7 +68,7 @@ function App() {
     }
     useEffect(() => {
         async function fetchAPI() {
-            await Promise.all([getCount(), getPerHealthFacility(), getPerLocation()]);
+            await Promise.all([getCount(), getPerHealthFacility()]);
         }
         fetchAPI();
     }, [])

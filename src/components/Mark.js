@@ -19,9 +19,12 @@ export default function Mark({ data, openPopup }) {
     }, [openPopup]);
 
     return (
-        <Marker icon={Icon} ref={markerRef} key={data.id} position={[data.attributes.latitude, data.attributes.longitude]}>
+        <Marker icon={Icon} ref={markerRef} key={data.id} position={[data.latitude, data.longitude]}>
           <Popup>
-          {data.attributes.ADM3_EN }, {data.attributes.ADM2_EN}, {data.attributes.ADM1_EN} <br />{data.attributes.count_}
+            <div className="popup">
+            {data.result} 
+            <div className="popup-count">{data.count}</div>
+            </div>
           </Popup>
         </Marker>
     )

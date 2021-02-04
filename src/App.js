@@ -32,31 +32,32 @@ function App() {
     });
     const [stateCount, setStateCount] = useState([]);
     const [statePerHealthFacility, setPerHealthFacility] = useState([]);
-    //const [statePerLocation, setPerLocation] = useState([]);
+    const [statePerLocation, setPerLocation] = useState([]);
     
 
     const getCount = async () => {
-        let res = await fetch('https://services5.arcgis.com/mnYJ21GiFTR97WFg/arcgis/rest/services/slide_fig/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*')
-        res = await res.json()
+        let res = await fetch('https://trackcovidph.herokuapp.com/api/v2/summary')
+        res = await res.json();
     
-        setStateCount(res.features[0].attributes)
+        setStateCount(res);
     }
 
     const getPerHealthFacility = async () => {
-        let res = await fetch('https://services5.arcgis.com/mnYJ21GiFTR97WFg/arcgis/rest/services/municitycent/FeatureServer/0/query?f=json&where=count_%3E%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*')
-        res = await res.json()
+        let res = await fetch('https://trackcovidph.herokuapp.com/api/v2/hospital-list')
+        res = await res.json();
 
-        setPerHealthFacility(res.features)
+        setPerHealthFacility(res);
     }
 
-    // const getPerLocation = async () => {
-    //     let res = await fetch('http://localhost:5000/api/v2/local-cases')
-    //     res = await res.json()
+    const getPerLocation = async () => {
+        let res = await fetch('https://trackcovidph.herokuapp.com/api/v2/location-list')
+        res = await res.json();
 
-    //     setPerLocation(res)
-    // }
+        setPerLocation(res);
+    };
 
     const clickLocation = (lat, lon, index) => {
+        console.log(index);
         setState({
             ...state,
             location: {
@@ -65,13 +66,27 @@ function App() {
             },
             selected: index
         })
-    }
+    };
+
+    const clickHospital = (lat, lon, index) => {
+        console.log(index);
+        setState({
+            ...state,
+            location: {
+                lat: lat,
+                lon: lon,
+            },
+            selected: index
+        });
+    };
+
     useEffect(() => {
         async function fetchAPI() {
-            await Promise.all([getCount(), getPerHealthFacility()]);
+            await Promise.all([getCount(), getPerHealthFacility(), getPerLocation()]);
         }
         fetchAPI();
-    }, [])
+    }, []);
+
       return (
         <Router>
             <Route path='/' exact render={props => 
@@ -84,8 +99,13 @@ function App() {
                 />
                 <Location 
                     state={state} 
-                    data={statePerHealthFacility} 
+                    data={statePerLocation} 
                     location={clickLocation}
+                />
+                <Location 
+                    state={state} 
+                    data={statePerHealthFacility} 
+                    location={clickHospital}
                 />
                 <Footer />
             </>
